@@ -54,7 +54,7 @@ g_entitiesFactories.addSettings(_settings)
 class MOD:
     AUTHOR = 'Chirimen , alphasave1'
     NAME = 'OfflineMode'
-    VERSION = '1.0'
+    VERSION = '0.1'
     DESCRIPTION = 'Load Mod From ModsListApi ,OfflineMode will Start.\n Elif You Push END Key,OfflineMode will End.'
     SUPPORT_URL = 'http://twitter.com/chirimenspiral , http://www.twitter.com/alphasave1'
 
