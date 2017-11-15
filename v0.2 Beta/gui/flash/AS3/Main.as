@@ -39,7 +39,7 @@ package
       override protected function onPopulate() : void
       {
          super.onPopulate();
-         width = 800;
+         width = 720;
          height = 360;
          window.title = "OfflineMode Launcher";
          var data:Array = new Array();
@@ -268,7 +268,7 @@ package
             "width":100,
             "height":25,
             "x":100,
-            "y":120,
+            "y":320,
             "label":"Load"
          })) as SoundButton;
          this.soundButtonLoad.addEventListener(MouseEvent.CLICK,this._LoadClick);
@@ -276,7 +276,7 @@ package
             "width":100,
             "height":25,
             "x":250,
-            "y":120,
+            "y":320,
             "label":"Cancel"
          })) as SoundButton;
          this.soundButtonCancel.addEventListener(MouseEvent.CLICK,this._CancelClick);
