@@ -1,12 +1,8 @@
-from debug_utils import LOG_CURRENT_EXCEPTION
-import game
 import GUI
 import Keys
 import BigWorld
 import WWISE
-from helpers import dependency
-from gui.shared import personality as gui_personality
-from skeletons.connection_mgr import IConnectionManager
+import ResMgr
 from helpers import OfflineMode
 from gui.Scaleform.framework import g_entitiesFactories, ViewSettings
 from gui.Scaleform.framework import ViewTypes, ScopeTemplates
@@ -16,11 +12,6 @@ from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.modsListApi import g_modsListApi
 
 def init():
-    global enableHandleKeyEvent
-    manager = dependency.instance(IConnectionManager)
-    manager.onConnected += onConnected
-    manager.onDisconnected += onDisconnected
-    enableHandleKeyEvent = True
     g_modsListApi.addModification(id='OfflineMode', name='OfflineMode Launcher', description='View All Maps on OfflineMode.', enabled=True, callback=lambda : g_appLoader.getDefLobbyApp().loadView(ViewLoadParams(_alias, None)), login=True, lobby=False, icon='gui/flash/offline_icon.jpg')
 
 
@@ -31,6 +22,7 @@ class TestWindow(AbstractWindowView):
 
     def _populate(self):
         super(TestWindow, self)._populate()
+        self.as_setdata()
 
     def onOfflineStart(self):
         mapName = self.flashObject.as_getName()
@@ -39,6 +31,12 @@ class TestWindow(AbstractWindowView):
 
     def onWindowClose(self):
         self.destroy()
+
+    def as_setdata(self):
+        spDir = ResMgr.openSection('spaces')
+        mapsData = spDir.keys()
+        mapsData.sort()
+        return self.flashObject.as_senddata(mapsData)
 
 
 _alias = 'Main'
@@ -52,7 +50,7 @@ g_entitiesFactories.addSettings(_settings)
 class MOD:
     AUTHOR = 'Chirimen , alphasave1'
     NAME = 'OfflineMode'
-    VERSION = '1.0.0'
+    VERSION = '1.0.1.1'
     DESCRIPTION = 'Load Mod From ModsListApi ,OfflineMode will Start.\n Elif You Push END Key,OfflineMode will End.'
     SUPPORT_URL = 'http://www.twitter.com/alphasave1'
 
@@ -66,29 +64,3 @@ def start(mapName):
     WWISE.WW_eventGlobal('loginscreen_mute')
     OfflineMode.launch(mapName)
     BigWorld.setWatcher('Visibility/GUI', True)
-
-def onConnected():
-    global enableHandleKeyEvent
-    enableHandleKeyEvent = False
-
-
-def onDisconnected():
-    global enableHandleKeyEvent
-    enableHandleKeyEvent = True
-
-
-def handleKeyEvent(event):
-    ret = wg_handleKeyEvent(event)
-    try:
-        if enableHandleKeyEvent and event.isKeyDown() and not event.isRepeatedEvent():
-            if event.key == Keys.KEY_END:
-                shutdown()
-    except:
-        LOG_CURRENT_EXCEPTION()
-
-    return ret
-
-
-wg_handleKeyEvent = game.handleKeyEvent
-game.handleKeyEvent = handleKeyEvent
-enableHandleKeyEvent = False
