@@ -6,6 +6,7 @@ import Keys
 import Math
 import ResMgr
 import WWISE
+import game_mode_emulator
 g_offlineModeEnabled = False
 g_currentMoveRate = 0.5
 g_gui = None
@@ -92,8 +93,22 @@ def onStartup():
     except (ValueError, IndexError):
         return False
 
+
 def shutdown():
     print 'mod_OfflineMode: shutdown'
+    from MemoryCriticalController import g_critMemHandler
+    g_critMemHandler.restore()
+    g_critMemHandler.destroy()
+    import MusicControllerWWISE
+    MusicControllerWWISE.destroy()
+    BigWorld.resetEntityManager(False, False)
+    BigWorld.clearAllSpaces()
+    from gui.shared import personality as gui_personality
+    gui_personality.fini()
+    from helpers import dependency
+    dependency.clear()
+    import SoundGroups
+    SoundGroups.g_instance.destroy()
     BigWorld.quit()
 
 def _clearGUI():
@@ -138,7 +153,8 @@ def launch(spaceName):
     BigWorld.worldDrawEnabled(False)
     _displayGUI(spaceName)
     spaceID = BigWorld.createSpace()
-    BigWorld.addSpaceGeometryMapping(spaceID, None, spaceName)
+    visibilityMask = game_mode_emulator.gameModeVisibilityMask()
+    BigWorld.addSpaceGeometryMapping(spaceID, None, spaceName, visibilityMask)
     _loadCameraTransforms()
     camera = BigWorld.FreeCamera()
     camera.spaceID = spaceID
@@ -159,7 +175,8 @@ def launch(spaceName):
 def adjustSpeed(diff):
     global g_currentMoveRate
     g_currentMoveRate = max(0.1, g_currentMoveRate + diff)
-    strafeRate = float(BigWorld.getWatcher('Client Settings/Strafe Rate'))
+    #strafeRate = float(BigWorld.getWatcher('Client Settings/Strafe Rate'))
+    strafeRate = BigWorld.getWatcher('Client Settings/Strafe Rate')
     strafeRate = 1.0 + math.pow(g_currentMoveRate, MOVE_SPEED_POW) * MOVE_SPEED_MAX
     BigWorld.setWatcher('Client Settings/Strafe Rate', strafeRate)
 
