@@ -175,7 +175,6 @@ def launch(spaceName):
 def adjustSpeed(diff):
     global g_currentMoveRate
     g_currentMoveRate = max(0.1, g_currentMoveRate + diff)
-    #strafeRate = float(BigWorld.getWatcher('Client Settings/Strafe Rate'))
     strafeRate = BigWorld.getWatcher('Client Settings/Strafe Rate')
     strafeRate = 1.0 + math.pow(g_currentMoveRate, MOVE_SPEED_POW) * MOVE_SPEED_MAX
     BigWorld.setWatcher('Client Settings/Strafe Rate', strafeRate)
