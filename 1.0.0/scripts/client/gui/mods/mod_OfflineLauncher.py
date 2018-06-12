@@ -8,11 +8,11 @@ from gui.Scaleform.framework import g_entitiesFactories, ViewSettings
 from gui.Scaleform.framework import ViewTypes, ScopeTemplates
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.app_loader import g_appLoader
-from gui.Scaleform.framework.managers.loaders import ViewLoadParams
+from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.modsListApi import g_modsListApi
 
 def init():
-    g_modsListApi.addModification(id='OfflineMode', name='OfflineMode Launcher', description='View All Maps on OfflineMode.', enabled=True, callback=lambda : g_appLoader.getDefLobbyApp().loadView(ViewLoadParams(_alias, None)), login=True, lobby=False, icon='gui/flash/offline_icon.jpg')
+    g_modsListApi.addModification(id='OfflineMode', name='OfflineMode Launcher', description='View All Maps on OfflineMode.', enabled=True, callback=lambda : g_appLoader.getDefLobbyApp().loadView(SFViewLoadParams(_alias, None)), login=True, lobby=False, icon='gui/flash/offline_icon.jpg')
 
 
 class TestWindow(AbstractWindowView):
